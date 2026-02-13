@@ -1,0 +1,2 @@
+SELECT COUNT(*) AS athlete_count
+FROM ATHLETE;

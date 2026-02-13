@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Search &amp; Explore</h1>
+
+<div class="search-forms">
+  <div class="search-card">
+    <h3>Quick filters</h3>
+    <form method="get" action="{{ url_for('search') }}">
+      <label for="filter_type">Filter type</label>
+      <select id="filter_type" name="filter_type" required>
+        <option value="" disabled {% if not filter_type %}selected{% endif %}>Select...</option>
+        <option value="athletes_name" {% if filter_type=='athletes_name' %}selected{% endif %}>Athletes by name</option>
+        <option value="teams_noc" {% if filter_type=='teams_noc' %}selected{% endif %}>Teams by NOC</option>
+        <option value="sports_name" {% if filter_type=='sports_name' %}selected{% endif %}>Sports by name</option>
+        <option value="events_year" {% if filter_type=='events_year' %}selected{% endif %}>Events by year</option>
+      </select>
+
+      <label for="term">Term</label>
+      <input id="term" name="term" type="text" value="{{ term }}" required>
+
+      <button type="submit">Run filter</button>
+    </form>
+
+    {% if filter_result.error %}
+      <p class="error">Error: {{ filter_result.error }}</p>
+    {% endif %}
+
+    {% if filter_result.rows %}
+      <h4>Filter results ({{ filter_result.rows|length }})</h4>
+      <div class="table-scroll">
+        <table class="subtable-table">
+          <thead>
+            <tr>
+              {% for col in filter_result.columns %}
+                <th>{{ col }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in filter_result.rows %}
+              <tr>
+                {% for col in filter_result.columns %}
+                  <td>{{ row[col]|safe }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="search-card">
+    <h3>Custom SQL (SELECT only)</h3>
+    <form method="post" action="{{ url_for('search') }}">
+      <textarea name="custom_sql" rows="6" placeholder="SELECT * FROM ATHLETE LIMIT 20;" required>{{ custom_sql }}</textarea>
+      <button type="submit">Run SQL</button>
+    </form>
+
+    {% if custom_result.error %}
+      <p class="error">Error: {{ custom_result.error }}</p>
+    {% endif %}
+
+    {% if custom_result.rows %}
+      <h4>SQL results ({{ custom_result.rows|length }})</h4>
+      <div class="table-scroll">
+        <table class="subtable-table">
+          <thead>
+            <tr>
+              {% for col in custom_result.columns %}
+                <th>{{ col }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in custom_result.rows %}
+              <tr>
+                {% for col in custom_result.columns %}
+                  <td>{{ row[col]|safe }}</td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

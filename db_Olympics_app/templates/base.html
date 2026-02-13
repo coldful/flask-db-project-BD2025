@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Olympics Browser</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h2>Navigation</h2>
+          <ul class="menu">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('athletes_list') }}">Athletes</a></li>
+            <li><a href="{{ url_for('teams_list') }}">Teams</a></li>
+            <li><a href="{{ url_for('sports_list') }}">Sports</a></li>
+            <li><a href="{{ url_for('olympics_list') }}">Olympic Games</a></li>
+            <li><a href="{{ url_for('events_list') }}">Events</a></li>
+            <li><a href="{{ url_for('questions') }}">SQL Questions</a></li>
+            <li><a href="{{ url_for('search') }}">Search</a></li>
+          </ul>
+        </div>
+
+        <div class="sidebar-section">
+          <h3>Tables overview</h3>
+          {% if sidebar_tables %}
+            <table class="sidebar-table">
+              <thead>
+                <tr>
+                  <th>Table</th>
+                  <th>Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in sidebar_tables %}
+                  <tr>
+                    <td><a href="{{ url_for(row.endpoint) }}">{{ row.label }}</a></td>
+                    <td>{{ row.count }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% else %}
+            <p class="muted">Counts unavailable.</p>
+          {% endif %}
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <div class="content-scroll">
+          {% block content %}{% endblock %}
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

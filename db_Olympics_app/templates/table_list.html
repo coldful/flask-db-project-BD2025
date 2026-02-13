@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% set table_titles = {
+  'ATHLETE': 'Athletes',
+  'TEAM': 'Teams',
+  'SPORT': 'Sports',
+  'OLYMPICS': 'Olympic Games',
+  'EVENT': 'Events'
+} %}
+
+{% block content %}
+
+  <h1>{{ table_titles.get(table_name, table_name) }}</h1>
+
+  {% if rows %}
+    <table class="full-width-table">
+      <thead>
+        <tr>
+          {% for col in rows[0].keys() %}
+            <th>{{ col }}</th>
+          {% endfor %}
+          <th>Details</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for row in rows %}
+          <tr>
+            {% for col in row.keys() %}
+              <td>{{ row[col]|safe }}</td>
+            {% endfor %}
+            <td>
+              <a href="{{ url_for(detail_endpoint, **{pk_name: row[pk_name]}) }}">
+                View
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No records found.</p>
+  {% endif %}
+
+{% endblock %}

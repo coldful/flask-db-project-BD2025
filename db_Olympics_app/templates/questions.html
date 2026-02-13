@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>SQL Questions</h1>
+
+  {% if questions %}
+    <ul>
+      {% for q in questions %}
+        <li style="margin-bottom: 1.5rem;">
+          <h3>Question {{ q.num }}</h3>
+          <p>{{ q.text }}</p>
+
+          <form method="get"
+                action="{{ url_for('query_result', file_number=q.num) }}">
+            <button type="submit">
+              View query and results
+            </button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No query files found in <code>questions</code>.</p>
+  {% endif %}
+{% endblock %}

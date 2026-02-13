@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% set table_titles = {
+  'ATHLETE': 'Athletes',
+  'TEAM': 'Teams',
+  'SPORT': 'Sports',
+  'OLYMPICS': 'Olympic Games',
+  'EVENT': 'Events'
+} %}
+
+{% set back_routes = {
+  'ATHLETE': 'athletes_list',
+  'TEAM': 'teams_list',
+  'SPORT': 'sports_list',
+  'OLYMPICS': 'olympics_list',
+  'EVENT': 'events_list'
+} %}
+
+{% block content %}
+
+  <p style="margin-bottom:20px;">
+    <a href="{{ url_for(back_endpoint or back_routes.get(table_name, 'index')) }}">
+      <- Back
+    </a>
+  </p>
+
+  <h1>{{ table_titles.get(table_name, table_name) }} - Details</h1>
+
+  {% if record %}
+    <table class="full-width-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for key in record.keys() %}
+          <tr>
+            <td><strong>{{ key }}</strong></td>
+            <td>{{ record[key]|safe }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Details not found.</p>
+  {% endif %}
+
+  {% if related_sections %}
+    <div class="subtables">
+      {% for section in related_sections %}
+        <div class="subtable">
+          <h2 style="margin-top: 0.5rem;">{{ section.title }}{% if section.rows %} - {{ section.rows|length }}{% endif %}</h2>
+          {% if section.rows and section.rows|length > 0 %}
+            {% set headers = section.headers if section.headers is defined and section.headers else section.rows[0].keys() %}
+            <div class="table-scroll">
+              <table class="subtable-table">
+                <thead>
+                  <tr>
+                    {% for col in headers %}
+                      <th>{{ col }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in section.rows %}
+                    <tr>
+                      {% for col in headers %}
+                        <td>{{ row[col]|safe }}</td>
+                      {% endfor %}
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <p>No related records.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+{% endblock %}
